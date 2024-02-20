@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
+	"log"
 	"strings"
 )
 
@@ -32,11 +33,7 @@ const (
 	rightRotation rotation = "right"
 )
 
-var (
-	Message  string
-	Shift    int
-	Rotation rotation
-)
+var rot rotation
 
 var caesarCmd = &cobra.Command{
 	Use:   "caesar",
@@ -45,17 +42,29 @@ var caesarCmd = &cobra.Command{
 
 ./kryptik caesar -m "Hello" -s 3 -r right`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Original message: [%s].\n", Message)
-		var caesarMessage = applyCaesarCipher(Message, Shift, Rotation)
-		fmt.Printf("Message after applying [%s] rotation with shift [%d]: [%s].\n", Rotation, Shift, caesarMessage)
+		message, err := cmd.Flags().GetString("message")
+		if err != nil {
+			e := errors.New(fmt.Sprintf(`could not extract value from "message" flag: %s`, err))
+			log.Fatal(e)
+		}
+
+		shift, err := cmd.Flags().GetInt("shift")
+		if err != nil {
+			e := errors.New(fmt.Sprintf(`could not extract value from "shift" flag: %s`, err))
+			log.Fatal(e)
+		}
+		
+		fmt.Printf("Original message: [%s].\n", message)
+		var caesarMessage = applyCaesarCipher(message, shift, rot)
+		fmt.Printf("Message after applying [%s] rotation with shift [%d]: [%s].\n", rot, shift, caesarMessage)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(caesarCmd)
-	caesarCmd.Flags().StringVarP(&Message, "message", "m", "", "Message to encrypt/decrypt")
-	caesarCmd.Flags().IntVarP(&Shift, "shift", "s", 0, "Value of shift")
-	caesarCmd.Flags().VarP(&Rotation, "rotation", "r", `Sets shift direction. Allowed values: "right", "left"`)
+	caesarCmd.Flags().StringP("message", "m", "", "Message to encrypt/decrypt")
+	caesarCmd.Flags().IntP("shift", "s", 0, "Value of shift")
+	caesarCmd.Flags().VarP(&rot, "rotation", "r", `Sets shift direction. Allowed values: "right", "left"`)
 	caesarCmd.MarkFlagRequired("message")
 	caesarCmd.MarkFlagRequired("shift")
 	caesarCmd.MarkFlagRequired("rotation")
