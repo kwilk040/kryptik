@@ -18,6 +18,6 @@ func TestPolybiusDecryption(t *testing.T) {
 	want := "POLYB[I/J]US SQUARE"
 	output := polybiusDecrypt(text)
 	if want != output {
-		t.Fatalf(`caesarCipher(%q) = %q, want match for %q`, text, output, want)
+		t.Fatalf(`polybiusDecrypt(%q) = %q, want match for %q`, text, output, want)
 	}
 }
