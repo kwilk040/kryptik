@@ -53,7 +53,7 @@ var caesarCmd = &cobra.Command{
 			e := errors.New(fmt.Sprintf(`could not extract value from "shift" flag: %s`, err))
 			log.Fatal(e)
 		}
-		
+
 		fmt.Printf("Original message: [%s].\n", message)
 		var caesarMessage = applyCaesarCipher(message, shift, rot)
 		fmt.Printf("Message after applying [%s] rotation with shift [%d]: [%s].\n", rot, shift, caesarMessage)
