@@ -62,8 +62,7 @@ func vigenereEncrypt(message, key string) string {
 
 	for i, char := range message {
 		if char >= 'A' && char <= 'Z' {
-			i2 := char - 'A' + int32(key[i%len(key)]-'A')
-			shifted := i2%26 + 'A'
+			shifted := (char-'A'+int32(key[i%len(key)]-'A'))%26 + 'A'
 			output.WriteRune(shifted)
 		} else {
 			output.WriteRune(char)
@@ -79,8 +78,7 @@ func vigenereDecrypt(message, key string) string {
 
 	for i, char := range message {
 		if char >= 'A' && char <= 'Z' {
-			nn := char - 'A' + 26 - (int32(key[i%len(key)] - 'A'))
-			shifted := nn%26 + 'A'
+			shifted := (char-'A'+26-(int32(key[i%len(key)]-'A')))%26 + 'A'
 			output.WriteRune(shifted)
 		} else {
 			output.WriteRune(char)
